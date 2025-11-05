@@ -9,6 +9,7 @@ import { DB_ADDRESS } from './config'
 import errorHandler from './middlewares/error-handler'
 import serveStatic from './middlewares/serverStatic'
 import routes from './routes'
+import { bodyXssValidator } from './middlewares/body-xss-validator'
 
 const { PORT = 3000, ORIGIN_ALLOW } = process.env
 const app = express()
@@ -24,6 +25,7 @@ app.use(urlencoded({ extended: true }))
 app.use(json())
 
 app.options('*', cors())
+app.use(bodyXssValidator)
 app.use(routes)
 app.use(errors())
 app.use(errorHandler)

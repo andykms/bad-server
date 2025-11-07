@@ -291,9 +291,7 @@ export const createOrder = async (
         const basket: IProduct[] = []
         const products = await Product.find<IProduct>({})
         const userId = res.locals.user._id
-        let { address, payment, phone, total, email, items, comment } =
-            req.body
-        
+        let { address, payment, phone, total, email, items, comment } = req.body
 
         items.forEach((id: Types.ObjectId) => {
             const product = products.find((p) => p._id.equals(id))

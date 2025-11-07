@@ -5,6 +5,7 @@ import { ordersSlice } from '@slices/orders/orders-slice'
 import { productsSlice } from '@slices/products/products-slice'
 import { profileOrdersSlice } from '@slices/profile-orders/profile-orders-slice'
 import { userSlice } from '@slices/user/user-slice'
+import { csrfSlice } from '@slices/csrf/csrf-slice'
 import persistReducer from 'redux-persist/es/persistReducer'
 import storage from 'redux-persist/lib/storage'
 import basketSlice from './slice/basket'
@@ -34,4 +35,5 @@ export const rootReducer = combineReducers({
     [ordersSlice.name]: ordersSlice.reducer,
     [customersSlice.name]: customersSlice.reducer,
     [profileOrdersSlice.name]: profileOrdersSlice.reducer,
+    [csrfSlice.name]: csrfSlice.reducer,
 })

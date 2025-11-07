@@ -26,6 +26,7 @@ productRouter.post(
 productRouter.delete(
     '/:productId',
     auth,
+    auth,
     roleGuardMiddleware(Role.Admin),
     validateObjId,
     deleteProduct

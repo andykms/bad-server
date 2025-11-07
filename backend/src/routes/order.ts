@@ -27,6 +27,7 @@ orderRouter.get('/me/:orderNumber', auth, getOrderCurrentUserByNumber)
 orderRouter.patch(
     '/:orderNumber',
     auth,
+    auth,
     roleGuardMiddleware(Role.Admin),
     updateOrder
 )

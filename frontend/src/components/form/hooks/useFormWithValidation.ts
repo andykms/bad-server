@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react'
-
+import DOMPurify from 'isomorphic-dompurify'
 
 interface IUseFormWithValidation<T> {
     values: T
@@ -24,7 +24,8 @@ export default function useFormWithValidation<T>(
 
     const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
         const input = evt.target
-        const value = input.value
+        let value = input.value
+        value = DOMPurify.sanitize(value)
         const name = input.name
         setValues({ ...values, [name]: value })
         setErrors({ ...errors, [name]: input.validationMessage })

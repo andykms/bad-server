@@ -16,6 +16,7 @@ import {
 } from '../../services/slice/orderForm'
 import EditorInput from '../editor-text/editor-input'
 import styles from './order.module.scss'
+import DOMPurify from 'isomorphic-dompurify'
 
 export function OrderContacts() {
     const location = useLocation()
@@ -41,6 +42,7 @@ export function OrderContacts() {
     }, [orderPersistData])
 
     const handleEditInputChange = (value: string) => {
+        value = DOMPurify.sanitize(value)
         setValuesForm({ ...values, comment: value })
     }
 

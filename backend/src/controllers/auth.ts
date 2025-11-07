@@ -78,7 +78,7 @@ const getCurrentUser = async (
                     'Пользователь по заданному id отсутствует в базе'
                 )
         )
-        res.json({ user, success: true })
+        res.json({ user, success: true, csrfToken: _req.csrfToken() })
     } catch (error) {
         next(error)
     }

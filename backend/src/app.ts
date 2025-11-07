@@ -11,10 +11,15 @@ import serveStatic from './middlewares/serverStatic'
 import routes from './routes'
 import { bodyXssValidator } from './middlewares/body-xss-validator'
 import { csrfProtection } from './middlewares/csrf'
+import { limiter } from './middlewares/rate-limiter'
+import { cleanTempJob } from './utils/cron-config'
 
 const { PORT = 3000, ORIGIN_ALLOW } = process.env
 const app = express()
 
+cleanTempJob.start()
+
+app.use(limiter)
 app.use(cookieParser())
 
 app.use(cors({ origin: ORIGIN_ALLOW, credentials: true }))

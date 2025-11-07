@@ -32,10 +32,10 @@ export const validateOrderBody = celebrate({
                     'Указано не валидное значение для способа оплаты, возможные значения - "card", "online"',
                 'string.empty': 'Не указан способ оплаты',
             }),
-        email: Joi.string().email().required().min(5).max(128).messages({
+        email: Joi.string().min(5).max(128).email().required().messages({
             'string.empty': 'Не указан email',
         }),
-        phone: Joi.string().required().pattern(phoneRegExp).min(5).max(('+7-(999)-999-99-99').length).messages({
+        phone: Joi.string().min(5).max(('+7-(999)-999-99-99').length).required().pattern(phoneRegExp).messages({
             'string.empty': 'Не указан телефон',
         }),
         address: Joi.string().required().min(1).max(512).messages({
@@ -58,7 +58,7 @@ export const validateProductBody = celebrate({
             'string.empty': 'Поле "title" должно быть заполнено',
         }),
         image: Joi.object().keys({
-            fileName: Joi.string().required(),
+            fileName: Joi.string().required().max(128),
             originalName: Joi.string().required(),
         }),
         category: Joi.string().required().min(1).max(64).messages({
@@ -112,10 +112,10 @@ export const validateUserBody = celebrate({
         }),
         email: Joi.string()
             .required()
-            .email()
-            .message('Поле "email" должно быть валидным email-адресом')
             .min(5)
             .max(128)
+            .email()
+            .message('Поле "email" должно быть валидным email-адресом')
             .messages({
                 'string.empty': 'Поле "email" должно быть заполнено',
             }),
@@ -126,9 +126,9 @@ export const validateAuthentication = celebrate({
     body: Joi.object().keys({
         email: Joi.string()
             .required()
-            .email()
             .min(5)
             .max(128)
+            .email()
             .message('Поле "email" должно быть валидным email-адресом')
             .messages({
                 'string.required': 'Поле "email" должно быть заполнено',

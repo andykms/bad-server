@@ -157,6 +157,9 @@ export const getOrdersCurrentUser = async (
     try {
         const userId = res.locals.user._id
         const { search, page = 1, limit = 5 } = req.query
+        if(isNaN(Number(page)) || isNaN(Number(limit))) {
+            throw new BadRequestError("");
+        }
         const options = {
             skip: (Number(page) - 1) * Number(limit),
             limit: Number(limit),

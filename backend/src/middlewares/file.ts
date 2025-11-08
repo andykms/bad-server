@@ -1,6 +1,8 @@
 import { Request, Express } from 'express'
 import multer, { FileFilterCallback } from 'multer'
 import { join } from 'path'
+import { v4 as uuidv4 } from 'uuid'
+import { extname } from 'path'
 
 type DestinationCallback = (error: Error | null, destination: string) => void
 type FileNameCallback = (error: Error | null, filename: string) => void
@@ -27,7 +29,7 @@ const storage = multer.diskStorage({
         file: Express.Multer.File,
         cb: FileNameCallback
     ) => {
-        cb(null, file.originalname)
+        cb(null, `${uuidv4()}${Date.now().toString()}${extname(file.originalname)}`)
     },
 })
 
@@ -44,11 +46,21 @@ const fileFilter = (
     file: Express.Multer.File,
     cb: FileFilterCallback
 ) => {
+    if(file.filename.length > 128) {
+        return cb(null, false);
+    }
     if (!types.includes(file.mimetype)) {
-        return cb(null, false)
+        return cb(null, false);
     }
 
     return cb(null, true)
 }
 
-export default multer({ storage, fileFilter })
+const upload = multer({
+    storage: storage,
+    limits: {fileSize: 8000000},
+    fileFilter
+})
+
+
+export default upload;

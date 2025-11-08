@@ -36,7 +36,17 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 const register = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email, password, name } = req.body
-        const newUser = new User({ email, password, name })
+        const newUser = new User({
+            email: {
+                $toString: email,
+            },
+            password: {
+                $toString: password,
+            },
+            name: {
+                $toString: name,
+            },
+        })
         await newUser.save()
         const accessToken = newUser.generateAccessToken()
         const refreshToken = await newUser.generateRefreshToken()
@@ -78,7 +88,7 @@ const getCurrentUser = async (
                     'Пользователь по заданному id отсутствует в базе'
                 )
         )
-        res.json({ user, success: true, csrfToken: _req.csrfToken() })
+        res.json({ user, success: true })
     } catch (error) {
         next(error)
     }
@@ -102,7 +112,7 @@ const deleteRefreshTokenInUser = async (
         REFRESH_TOKEN.secret
     ) as JwtPayload
     const user = await User.findOne({
-        _id: decodedRefreshTkn._id,
+        _id: { $toString: decodedRefreshTkn._id },
     }).orFail(() => new UnauthorizedError('Пользователь не найден в базе'))
 
     const rTknHash = crypto

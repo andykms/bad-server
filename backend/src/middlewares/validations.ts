@@ -9,6 +9,18 @@ export enum PaymentType {
     Online = 'online',
 }
 
+const enum validationParams: {
+    MIN_EMAIL: 5,
+    MAX_EMAIL: 128,
+    MAX_PASSWORD: 2048,
+    MIN_PASSWORD: 12,
+    MIN_NAME: 2,
+    MAX_NAME: 30,
+    MAX_INT_NUM_COUNT: 15,
+    MAX_SEARCH_LEN: 32,
+    MAX_DESCRIPTION_LEN: 1024
+}
+
 // валидация id
 export const validateOrderBody = celebrate({
     body: Joi.object().keys({
@@ -64,7 +76,7 @@ export const validateProductBody = celebrate({
         category: Joi.string().required().min(1).max(64).messages({
             'string.empty': 'Поле "category" должно быть заполнено',
         }),
-        description: Joi.string().required().min(1).max(1024).messages({
+        description: Joi.string().required().min(1).max(validationParams.MAX_DESCRIPTION_LEN).messages({
             'string.empty': 'Поле "description" должно быть заполнено',
         }),
         price: Joi.number().allow(null),
@@ -82,7 +94,7 @@ export const validateProductUpdateBody = celebrate({
             originalName: Joi.string().required(),
         }),
         category: Joi.string().max(64),
-        description: Joi.string().max(1024),
+        description: Joi.string().max(validationParams.MAX_DESCRIPTION_LEN),
         price: Joi.number().allow(null),
     }),
 })
@@ -99,15 +111,6 @@ export const validateObjId = celebrate({
             }),
     }),
 })
-
-const enum validationParams: {
-    MIN_EMAIL: 5,
-    MAX_EMAIL: 128,
-    MAX_PASSWORD: 2048,
-    MIN_PASSWORD: 12,
-    MIN_NAME: 2,
-    MAX_NAME: 30
-}
 
 export const validatePatchUser = celebrate({
     body: Joi.object().keys({
@@ -173,61 +176,75 @@ export const validateRegisterUser = celebrate({
     }),
 })
 
-export const validateAuthentication = celebrate({
-    body: Joi.object().keys({
-        email: Joi.string()
-            .required()
-            .min(5)
-            .max(128)
-            .email()
-            .message('Поле "email" должно быть валидным email-адресом')
-            .messages({
-                'string.required': 'Поле "email" должно быть заполнено',
-            }),
-        password: Joi.string().required().max(2048).messages({
-            'string.empty': 'Поле "password" должно быть заполнено',
-            'string.max': 'неверный логин или пароль',
-        }),
-    }),
-})
 
 export const getCustomerValidation = celebrate({
     query: Joi.object().keys({
         limit: Joi.string().min(1).max(3),
-        page: Joi.string().min(1).max(16),
-        sortField: Joi.string().max(15),    
-        sortOrder: Joi.string().max(15),
+        page: Joi.string().min(1).max(validationParams.MAX_INT_NUM_COUNT),
+        sortField: Joi.string().max(validationParams.MAX_INT_NUM_COUNT),    
+        sortOrder: Joi.string().max(validationParams.MAX_INT_NUM_COUNT),
         registrationDateFrom: Joi.date().max(Date.now()),
         registrationDateTo: Joi.date().max(Date.now()).min(Joi.ref('registrationDateFrom')),
         lastOrderDateFrom: Joi.date().max(Date.now()),
         lastOrderDateTo: Joi.date().max(Date.now()).min(Joi.ref('lastOrderDateFrom')),
-        totalAmountFrom: Joi.string().max(15),
-        totalAmountTo: Joi.string().max(15),
-        orderCountFrom: Joi.string().max(15),
-        orderCountTo: Joi.string().max(15),
-        search: Joi.string().max(32),
+        totalAmountFrom: Joi.string().max(validationParams.MAX_INT_NUM_COUNT),
+        totalAmountTo: Joi.string().max(validationParams.MAX_INT_NUM_COUNT),
+        orderCountFrom: Joi.string().max(validationParams.MAX_INT_NUM_COUNT),
+        orderCountTo: Joi.string().max(validationParams.MAX_INT_NUM_COUNT),
+        search: Joi.string().max(validationParams.MAX_SEARCH_LEN),
     }),
+})
+
+export const validatePatchCustomer = celebrate({
+    body: Joi.object().keys({
+        name: Joi.string().min(validationParams.MIN_NAME).max(validationParams.MAX_NAME).messages({
+            'string.min': 'Минимальная длина поля "name" - 2',
+            'string.max': 'Максимальная длина поля "name" - 30',
+        }),
+        password: Joi.string().min(validationParams.MIN_PASSWORD).max(validationParams.MAX_PASSWORD).messages({
+            'string.empty': 'Поле "password" должно быть заполнено',
+            'string.max': 'Валидация не прошла',
+        }),
+        email: Joi.string()
+            .min(validationParams.MIN_EMAIL)
+            .max(validationParams.MAX_EMAIL)
+            .email()
+            .message('Поле "email" должно быть валидным email-адресом')
+            .messages({
+                'string.empty': 'Поле "email" должно быть заполнено',
+                'string.max': 'Валидация не прошла'
+            }),
+        lastOrderDate: Joi.date().max(Date.now()),
+        totalAmount: Joi.string().max(validationParams.MAX_INT_NUM_COUNT),
+        orderCount: Joi.string().max(validationParams.MAX_INT_NUM_COUNT),
+    }),
+})
+
+export const getOrdersValidation = celebrate({
+    query: Joi.object().keys({
+        limit: Joi.string().min(1).max(3),
+        page: Joi.string().min(1).max(validationParams.MAX_INT_NUM_COUNT),
+        sortField: Joi.string().max(validationParams.MAX_INT_NUM_COUNT),    
+        sortOrder: Joi.string().max(validationParams.MAX_INT_NUM_COUNT),
+        status: Joi.string().max(validationParams.MAX_INT_NUM_COUNT),
+        totalAmountFrom: Joi.string().max(validationParams.MAX_INT_NUM_COUNT),
+        totalAmountTo: Joi.string().max(validationParams.MAX_INT_NUM_COUNT),
+        orderDateFrom: Joi.date().max(Date.now()),
+        orderDateTo: Joi.date().max(Date.now()).min(Joi.ref('registrationDateFrom')),
+        search: Joi.string().max(validationParams.MAX_SEARCH_LEN),
+    })
 })
 
 export const getOrdersCurrentUserValidation = celebrate({
     query: Joi.object().keys({
         limit: Joi.string().min(1).max(3),
-        page: Joi.string().min(1).max(15),
-        search: Joi.string().max(32),
+        page: Joi.string().min(1).max(validationParams.MAX_INT_NUM_COUNT),
+        search: Joi.string().max(validationParams.MAX_SEARCH_LEN),
     }),
 }) 
 
-export const getOrdersValidation = celebrate({
-    query: Joi.object().keys({
-        limit: Joi.string().min(1).max(3),
-        page: Joi.string().min(1).max(15),
-        sortField: Joi.string().max(15),    
-        sortOrder: Joi.string().max(15),
-        status: Joi.string().max(15),
-        totalAmountFrom: Joi.string().max(15),
-        totalAmountTo: Joi.string().max(15),
-        orderDateFrom: Joi.date().max(Date.now()),
-        orderDateTo: Joi.date().max(Date.now()).min(Joi.ref('registrationDateFrom')),
-        search: Joi.string().max(32),
+export const validationOrderByNumber = celebrate({
+    params: Joi.object().keys({
+        orderNumber: Joi.string().required().max(validationParams.MAX_INT_NUM_COUNT)
     })
 })

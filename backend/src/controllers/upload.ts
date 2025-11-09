@@ -27,7 +27,7 @@ export const uploadFile = async (
     }
 
     if(!types.includes(req.file.mimetype)) {
-        return next(new BadRequestError(''))
+        return next(new BadRequestError('неверные типы'))
     }
 
     if(!req.file.path) {
@@ -35,7 +35,7 @@ export const uploadFile = async (
     }
 
     if(!types.map((type)=>`.${type.split("/")[1]}`).includes(extname(req.file.path))) {
-        return next(new BadRequestError(""))
+        return next(new BadRequestError("неверный формат"))
     }
 
     try {

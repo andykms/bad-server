@@ -6,15 +6,18 @@ import { v4 as uuidv4 } from 'uuid'
 import { isValidFilename } from '../utils/is-valid-filename'
 import BadRequestError from '../errors/bad-request-error'
 
-const getExtension = (mimetype: string) => {
-    const extensions: { [key: string]: string } = {
-        'image/png': '.png',
-        'image/jpg': '.jpg',
-        'image/jpeg': '.jpg',
-        'image/gif': '.gif',
-        'image/svg+xml': '.svg',
+// В middleware добавьте проверку
+import { existsSync, mkdirSync } from 'fs'
+
+const getUploadPath = () => {
+    const path = process.env.UPLOAD_PATH_TEMP 
+        ? join(__dirname, `../public/${process.env.UPLOAD_PATH_TEMP}`)
+        : join(__dirname, '../public/temp');
+    
+    if (!existsSync(path)) {
+        mkdirSync(path, { recursive: true });
     }
-    return extensions[mimetype] || '.bin'
+    return path;
 }
 
 type DestinationCallback = (error: Error | null, destination: string) => void
@@ -28,12 +31,7 @@ const storage = multer.diskStorage({
     ) => {
         cb(
             null,
-            join(
-                __dirname,
-                process.env.UPLOAD_PATH_TEMP
-                    ? `../public/${process.env.UPLOAD_PATH_TEMP}`
-                    : '../public/temp'
-            )
+            getUploadPath()
         )
     },
 
@@ -44,7 +42,7 @@ const storage = multer.diskStorage({
     ) => {
         cb(
             null,
-            `${uuidv4()}${Date.now().toString()}${file ? getExtension(file.mimetype) : ""}`
+            `${uuidv4()}${extname(file.originalname)}`
         )
     },
 })
@@ -85,12 +83,7 @@ const fileFilter = (
 }
 
 const upload = multer({
-    dest: join(
-        __dirname,
-        process.env.UPLOAD_PATH_TEMP
-            ? `../public/${process.env.UPLOAD_PATH_TEMP}`
-            : '../public/temp'
-    ),
+    dest: getUploadPath(),
     storage,
     limits: { fileSize: 20000000 },
     fileFilter,

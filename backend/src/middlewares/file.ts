@@ -32,7 +32,7 @@ const storage = multer.diskStorage({
     ) => {
         cb(
             null,
-            `${uuidv4()}${Date.now().toString()}${extname(file.originalname)}`
+            `${uuidv4()}${Date.now().toString()}.${extname(file.originalname)}`
         )
     },
 })

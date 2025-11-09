@@ -1,6 +1,18 @@
 import { NextFunction, Request, Response } from 'express'
 import { constants } from 'http2'
 import BadRequestError from '../errors/bad-request-error'
+import { MIN_IMAGE_SIZE } from '../config'
+
+
+
+const types = [
+    'image/png',
+    'image/jpg',
+    'image/jpeg',
+    'image/gif',
+    'image/svg+xml',
+]
+
 
 export const uploadFile = async (
     req: Request,
@@ -10,7 +22,11 @@ export const uploadFile = async (
     if (!req.file) {
         return next(new BadRequestError('Файл не загружен'))
     }
-    if(req.file.size < 2048) {
+    if(req.file.size < MIN_IMAGE_SIZE) {
+        return next(new BadRequestError(''))
+    }
+
+    if(!types.includes(req.file.mimetype)) {
         return next(new BadRequestError(''))
     }
     try {

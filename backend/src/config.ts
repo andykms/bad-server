@@ -25,3 +25,7 @@ export const REFRESH_TOKEN = {
 
 export const PROMISE_LIMIT_TIMEOUT =
     Number(process.env.PROMISE_LIMIT_TIMEOUT) || 10000
+
+export const MIN_IMAGE_SIZE = Number(process.env.MIN_IMAGE_SIZE) || 2048;
+
+export const MAX_IMAGE_SIZE = Number(process.env.MAX_IMAGE_SIZE) || 10 * 1024 * 1024;

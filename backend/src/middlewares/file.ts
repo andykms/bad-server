@@ -5,6 +5,7 @@ import { join, extname } from 'path'
 import { v4 as uuidv4 } from 'uuid'
 import { isValidFilename } from '../utils/is-valid-filename'
 import BadRequestError from '../errors/bad-request-error'
+import { MIN_IMAGE_SIZE, MAX_IMAGE_SIZE } from '../config'
 
 // В middleware добавьте проверку
 import { existsSync, mkdirSync } from 'fs'
@@ -60,7 +61,7 @@ const fileFilter = (
     file: Express.Multer.File,
     cb: FileFilterCallback
 ) => {
-    if(file.size < 2048) {
+    if(file.size < MIN_IMAGE_SIZE) {
         return cb(new BadRequestError(""));
     }
 
@@ -79,7 +80,7 @@ const fileFilter = (
 
 const upload = multer({
     storage,
-    limits: { fileSize: 10 * 1024 * 1024 },
+    limits: { fileSize: MAX_IMAGE_SIZE },
     fileFilter,
 })
 

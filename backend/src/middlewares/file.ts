@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
                 __dirname,
                 process.env.UPLOAD_PATH_TEMP
                     ? `../public/${process.env.UPLOAD_PATH_TEMP}`
-                    : '../public'
+                    : '../public/temp'
             )
         )
     },

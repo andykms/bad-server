@@ -1,5 +1,5 @@
 export const isValidFilename = (filename: string): boolean => {
-    if (!filename || filename.length === 0 || filename.length > 255) {
+    if (!filename || filename.length === 0 || filename.length > 2048) {
         return false
     }
     // eslint-disable-next-line no-control-regex

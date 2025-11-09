@@ -25,8 +25,8 @@ enum validationParams {
     MAX_DESCRIPTION_LEN = 1024,
     MAX_SHORT_WORD_LEN = 16,
     MIN_LIMIT_PAGINATION = 1,
-    MAX_LIMIT_PAGINATION = 20,
-    MAX_PAGE_PAGINATION = 100,
+    MAX_LIMIT_PAGINATION = 1000,
+    MAX_PAGE_PAGINATION = 1000,
 }
 
 const stringIsNumber = (value: string, helpers: _joi.CustomHelpers) => {

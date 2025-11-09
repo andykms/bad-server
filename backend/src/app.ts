@@ -13,6 +13,7 @@ import { bodyXssValidator } from './middlewares/body-xss-validator'
 import { csrfProtection } from './middlewares/csrf'
 import { limiter } from './middlewares/rate-limiter'
 import { cleanTempJob } from './utils/cron-config'
+
 import helmet from 'helmet'
 
 const { PORT = 3000, ORIGIN_ALLOW } = process.env
@@ -34,7 +35,7 @@ app.use(urlencoded({ extended: true }))
 app.use(json())
 
 app.options('*', cors())
-app.use(csrfProtection)
+//app.use(csrfProtection)
 app.use(bodyXssValidator)
 app.use(routes)
 app.use(errors())

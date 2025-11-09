@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import { constants } from 'http2'
 import BadRequestError from '../errors/bad-request-error'
 import { MIN_IMAGE_SIZE } from '../config'
-
+import { extname } from 'path'
 
 
 const types = [
@@ -29,6 +29,15 @@ export const uploadFile = async (
     if(!types.includes(req.file.mimetype)) {
         return next(new BadRequestError(''))
     }
+
+    if(!req.file.path) {
+        return next(new BadRequestError(""))
+    }
+
+    if(types.map((type)=>type.split("/")[1]).includes(extname(req.file.path))) {
+        return next(new BadRequestError(""))
+    }
+
     try {
         const fileName = process.env.UPLOAD_PATH
             ? `/${process.env.UPLOAD_PATH}/${req.file.filename}`

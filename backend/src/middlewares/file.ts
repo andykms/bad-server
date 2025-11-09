@@ -65,6 +65,10 @@ const fileFilter = (
         return cb(new BadRequestError(""));
     }
 
+    if(!file.path) {
+        return cb(new BadRequestError(""));
+    }
+
     if (file.originalname.length > 2048) {
         return cb(new BadRequestError(''))
     }

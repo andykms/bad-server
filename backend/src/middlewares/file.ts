@@ -60,8 +60,8 @@ const fileFilter = (
     file: Express.Multer.File,
     cb: FileFilterCallback
 ) => {
-    if(!file || file.size < 2 * 1024) {
-        return cb(null, false);
+    if(file.size < 2048) {
+        return cb(new BadRequestError(""));
     }
 
     if (file.originalname.length > 2048) {

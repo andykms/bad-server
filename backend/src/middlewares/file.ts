@@ -50,16 +50,9 @@ const fileFilter = (
     file: Express.Multer.File,
     cb: FileFilterCallback
 ) => {
-    if (file.originalname.length > 2048) {
-        return cb(null, false)
-    }
-    if (!isValidFilename(file.originalname)) {
-        return cb(null, false)
-    }
     if (!types.includes(file.mimetype)) {
         return cb(null, false)
     }
-
     return cb(null, true)
 }
 

@@ -48,6 +48,14 @@ const userSchema = new mongoose.Schema<IUser, IUserModel, IUserMethods>(
             default: 'Евлампий',
             minlength: [2, 'Минимальная длина поля "name" - 2'],
             maxlength: [30, 'Максимальная длина поля "name" - 30'],
+            validate: {
+                validator: function (v: string) {
+                    return (
+                        !v.includes('$') && !/\b(\$where|\$eq|\$ne)\b/.test(v)
+                    )
+                },
+                message: 'Имя содержит запрещенные символы',
+            },
         },
         // в схеме пользователя есть обязательные email и password
         email: {
@@ -55,9 +63,10 @@ const userSchema = new mongoose.Schema<IUser, IUserModel, IUserMethods>(
             required: [true, 'Поле "email" должно быть заполнено'],
             unique: true, // поле email уникально (есть опция unique: true);
             validate: {
-                // для проверки email студенты используют validator
-                validator: (v: string) => validator.isEmail(v),
-                message: 'Поле "email" должно быть валидным email-адресом',
+                validator: function (v: string) {
+                    return !v.includes('$') && validator.isEmail(v)
+                },
+                message: 'поле Email не валидно.',
             },
         },
         // поле password не имеет ограничения на длину, т.к. пароль хранится в виде хэша
@@ -113,6 +122,7 @@ const userSchema = new mongoose.Schema<IUser, IUserModel, IUserMethods>(
                 return ret
             },
         },
+        strict: true,
     }
 )
 
@@ -179,7 +189,7 @@ userSchema.statics.findUserByCredentials = async function findByCredentials(
     password: string
 ) {
     const user = await this.findOne({
-        email
+        email,
     })
         .select('+password')
         .orFail(() => new UnauthorizedError('Неправильные почта или пароль'))

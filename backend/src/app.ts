@@ -13,6 +13,7 @@ import { bodyXssValidator } from './middlewares/body-xss-validator'
 import { csrfProtection } from './middlewares/csrf'
 import { limiter } from './middlewares/rate-limiter'
 import { cleanTempJob } from './utils/cron-config'
+import mongoSanitize from 'express-mongo-sanitize';
 
 import helmet from 'helmet'
 
@@ -21,9 +22,11 @@ const app = express()
 
 cleanTempJob.start()
 
-app.use(helmet())
-
 app.use(limiter)
+app.use(mongoSanitize({
+  replaceWith: '_'
+}));
+app.use(helmet())
 app.use(cookieParser())
 
 app.use(cors({ origin: ORIGIN_ALLOW, credentials: true }))

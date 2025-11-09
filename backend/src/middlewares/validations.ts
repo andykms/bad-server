@@ -24,8 +24,10 @@ enum validationParams {
     MAX_SEARCH_LEN = 32,
     MAX_DESCRIPTION_LEN = 1024,
     MAX_SHORT_WORD_LEN = 16,
+    
     MIN_LIMIT_PAGINATION = 0,
     MAX_LIMIT_PAGINATION = Number.MAX_SAFE_INTEGER,
+    MIN_PAGE_PAGINATION = 1,
     MAX_PAGE_PAGINATION = Number.MAX_SAFE_INTEGER,
 }
 
@@ -249,7 +251,7 @@ export const getCustomerValidation = celebrate({
         page: Joi.string()
             .custom(
                 customMaxNumberAsString({
-                    min: 0,
+                    min: validationParams.MIN_PAGE_PAGINATION,
                     max: validationParams.MAX_PAGE_PAGINATION,
                 })
             ),
@@ -352,7 +354,7 @@ export const getOrdersValidation = celebrate({
         page: Joi.string()
             .custom(
                 customMaxNumberAsString({
-                    min: 1,
+                    min: validationParams.MIN_PAGE_PAGINATION,
                     max: validationParams.MAX_PAGE_PAGINATION,
                 })
             ),
@@ -393,7 +395,7 @@ export const getOrdersCurrentUserValidation = celebrate({
         page: Joi.string()
             .custom(
                 customMaxNumberAsString({
-                    min: 0,
+                    min: validationParams.MIN_PAGE_PAGINATION,
                     max: validationParams.MAX_PAGE_PAGINATION,
                 })
             ),
@@ -415,7 +417,7 @@ export const validationProducts = celebrate({
         page: Joi.string()
             .custom(
                 customMaxNumberAsString({
-                    min: 0,
+                    min: validationParams.MIN_PAGE_PAGINATION,
                     max: validationParams.MAX_PAGE_PAGINATION,
                 })
             ),

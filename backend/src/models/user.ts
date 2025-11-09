@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import crypto from 'crypto'
 import jwt from 'jsonwebtoken'
-import mongoose, { Document, HydratedDocument, Model, ObjectId, Types } from 'mongoose'
+import mongoose, { Document, HydratedDocument, Model, Types } from 'mongoose'
 import validator from 'validator'
 import md5 from 'md5'
 
@@ -14,7 +14,7 @@ export enum Role {
 }
 
 export interface IUser extends Document {
-    _id: mongoose.Types.ObjectId;
+    _id: mongoose.Types.ObjectId
     name: string
     email: string
     password: string
@@ -50,11 +50,8 @@ const userSchema = new mongoose.Schema<IUser, IUserModel, IUserMethods>(
             minlength: [2, 'Минимальная длина поля "name" - 2'],
             maxlength: [30, 'Максимальная длина поля "name" - 30'],
             validate: {
-                validator: function (v: string) {
-                    return (
-                        !v.includes('$') && !/\b(\$where|\$eq|\$ne)\b/.test(v)
-                    )
-                },
+                validator: (v: string) =>
+                    !v.includes('$') && !/\b(\$where|\$eq|\$ne)\b/.test(v),
                 message: 'Имя содержит запрещенные символы',
             },
         },
@@ -64,9 +61,8 @@ const userSchema = new mongoose.Schema<IUser, IUserModel, IUserMethods>(
             required: [true, 'Поле "email" должно быть заполнено'],
             unique: true, // поле email уникально (есть опция unique: true);
             validate: {
-                validator: function (v: string) {
-                    return !v.includes('$') && validator.isEmail(v)
-                },
+                validator: (v: string) =>
+                    !v.includes('$') && validator.isEmail(v),
                 message: 'поле Email не валидно.',
             },
         },

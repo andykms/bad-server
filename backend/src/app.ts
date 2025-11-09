@@ -5,6 +5,8 @@ import 'dotenv/config'
 import express, { json, urlencoded } from 'express'
 import mongoose from 'mongoose'
 import path from 'path'
+import mongoSanitize from 'express-mongo-sanitize'
+import helmet from 'helmet'
 import { DB_ADDRESS } from './config'
 import errorHandler from './middlewares/error-handler'
 import serveStatic from './middlewares/serverStatic'
@@ -13,9 +15,6 @@ import { bodyXssValidator } from './middlewares/body-xss-validator'
 import { csrfProtection } from './middlewares/csrf'
 import { limiter } from './middlewares/rate-limiter'
 import { cleanTempJob } from './utils/cron-config'
-import mongoSanitize from 'express-mongo-sanitize';
-
-import helmet from 'helmet'
 
 const { PORT = 3000, ORIGIN_ALLOW } = process.env
 const app = express()
@@ -23,9 +22,11 @@ const app = express()
 cleanTempJob.start()
 
 app.use(limiter)
-app.use(mongoSanitize({
-  replaceWith: '_'
-}));
+app.use(
+    mongoSanitize({
+        replaceWith: '_',
+    })
+)
 app.use(helmet())
 app.use(cookieParser())
 

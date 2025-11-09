@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
 import { FilterQuery } from 'mongoose'
+import escapeRegExp from 'escape-string-regexp'
 import NotFoundError from '../errors/not-found-error'
 import Order from '../models/order'
 import User, { IUser } from '../models/user'
-import escapeRegExp from 'escape-string-regexp';
 
 // TODO: Добавить guard admin
 // eslint-disable-next-line max-len
@@ -28,8 +28,8 @@ export const getCustomers = async (
             orderCountFrom,
             orderCountTo,
         } = req.query
-        
-        const search = escapeRegExp((req.query.search || "") as string);
+
+        const search = escapeRegExp((req.query.search || '') as string)
 
         const filters: FilterQuery<Partial<IUser>> = {}
 

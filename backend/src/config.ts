@@ -23,4 +23,5 @@ export const REFRESH_TOKEN = {
     },
 }
 
-export const PROMISE_LIMIT_TIMEOUT = Number(process.env.PROMISE_LIMIT_TIMEOUT) || 10000;
+export const PROMISE_LIMIT_TIMEOUT =
+    Number(process.env.PROMISE_LIMIT_TIMEOUT) || 10000

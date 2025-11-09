@@ -10,7 +10,7 @@ import {
     validateObjId,
     validateProductBody,
     validateProductUpdateBody,
-    validationProducts
+    validationProducts,
 } from '../middlewares/validations'
 import { Role } from '../models/user'
 

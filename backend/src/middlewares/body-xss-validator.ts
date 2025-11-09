@@ -3,11 +3,12 @@ import DOMPurify from 'isomorphic-dompurify'
 
 export const bodyXssValidator = (
     req: Request,
-    res: Response,
+    _: Response,
     next: NextFunction
 ) => {
+    // eslint-disable-next-line prefer-destructuring
     const body = req.body
-    const stack = [body]
+    const stack = [req.body]
     try {
         while (stack.length > 0) {
             const currObj = stack.pop()
@@ -19,6 +20,7 @@ export const bodyXssValidator = (
                         stack.push(item)
                     }
                 })
+                // eslint-disable-next-line no-continue
                 continue
             }
             const keys = Object.keys(currObj)

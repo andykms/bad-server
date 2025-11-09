@@ -12,10 +12,6 @@ export const csrfProtection = csurf({
     ignoreMethods: ['GET', 'HEAD', 'OPTIONS'],
 })
 
-export const sendCsrfToken = (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
+export const sendCsrfToken = (req: Request, res: Response, _: NextFunction) => {
     res.send({ csrfToken: req.csrfToken() })
 }

@@ -39,7 +39,7 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
         const newUser = new User({
             email,
             password,
-            name
+            name,
         })
         await newUser.save()
         const accessToken = newUser.generateAccessToken()

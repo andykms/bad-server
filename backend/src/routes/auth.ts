@@ -9,7 +9,11 @@ import {
     updateCurrentUser,
 } from '../controllers/auth'
 import auth from '../middlewares/auth'
-import { validatePatchUser, validateLoginUser, validateRegisterUser } from '../middlewares/validations'
+import {
+    validatePatchUser,
+    validateLoginUser,
+    validateRegisterUser,
+} from '../middlewares/validations'
 
 const authRouter = Router()
 

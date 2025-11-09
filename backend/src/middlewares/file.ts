@@ -4,6 +4,7 @@ import { join, extname } from 'path'
 // eslint-disable-next-line import/no-unresolved
 import { v4 as uuidv4 } from 'uuid'
 import { isValidFilename } from '../utils/is-valid-filename'
+import BadRequestError from '../errors/bad-request-error'
 
 const getExtension = (mimetype: string) => {
   const extensions: { [key: string]: string } = {
@@ -69,13 +70,13 @@ const fileFilter = (
 ) => {
     
     if (file.originalname.length > 2048) {
-        return cb(null, false)
+        return cb(new BadRequestError(""))
     }
     if (!isValidFilename(file.originalname)) {
-        return cb(null, false)
+        return cb(new BadRequestError(""))
     }
     if (!types.includes(file.mimetype)) {
-        return cb(null, false)
+        return cb(new BadRequestError(""))
     }
 
     return cb(null, true)

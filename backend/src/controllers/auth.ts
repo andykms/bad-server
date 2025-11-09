@@ -37,15 +37,9 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email, password, name } = req.body
         const newUser = new User({
-            email: {
-                $toString: email,
-            },
-            password: {
-                $toString: password,
-            },
-            name: {
-                $toString: name,
-            },
+            email,
+            password,
+            name
         })
         await newUser.save()
         const accessToken = newUser.generateAccessToken()

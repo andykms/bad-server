@@ -44,7 +44,7 @@ const storage = multer.diskStorage({
     ) => {
         cb(
             null,
-            `${uuidv4()}${Date.now().toString()}${getExtension(file.mimetype)}`
+            `${uuidv4()}${Date.now().toString()}${file ? getExtension(file.mimetype) : ""}`
         )
     },
 })
@@ -67,6 +67,10 @@ const fileFilter = (
     file: Express.Multer.File,
     cb: FileFilterCallback
 ) => {
+    if(!file || file.size <= 0) {
+        return cb(null, false);
+    }
+
     if (file.originalname.length > 2048) {
         return cb(new BadRequestError(''))
     }

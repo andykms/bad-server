@@ -16,7 +16,7 @@ enum validationParams {
     MIN_EMAIL = 5,
     MAX_EMAIL = 128,
     MAX_PASSWORD = 2048,
-    MIN_PASSWORD = 8,
+    MIN_PASSWORD = 6,
     MIN_NAME = 2,
     MAX_NAME = 30,
     MAX_INT_NUM_COUNT = 15,

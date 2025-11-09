@@ -5,6 +5,18 @@ import { join, extname } from 'path'
 import { v4 as uuidv4 } from 'uuid'
 import { isValidFilename } from '../utils/is-valid-filename'
 
+const getExtension = (mimetype: string) => {
+  const extensions: { [key: string]: string } = {
+    'image/png': '.png',
+    'image/jpg': '.jpg',
+    'image/jpeg': '.jpg',
+    'image/gif': '.gif',
+    'image/svg+xml': '.svg'
+  }
+  return extensions[mimetype] || '.bin'
+}
+
+
 type DestinationCallback = (error: Error | null, destination: string) => void
 type FileNameCallback = (error: Error | null, filename: string) => void
 
@@ -32,7 +44,7 @@ const storage = multer.diskStorage({
     ) => {
         cb(
             null,
-            `${uuidv4()}${Date.now().toString()}.${extname(file.originalname)}`
+            `${uuidv4()}${Date.now().toString()}${getExtension(file.mimetype)}`
         )
     },
 })
@@ -50,9 +62,16 @@ const fileFilter = (
     file: Express.Multer.File,
     cb: FileFilterCallback
 ) => {
+    if (file.originalname.length > 2048) {
+        return cb(null, false)
+    }
+    if (!isValidFilename(file.originalname)) {
+        return cb(null, false)
+    }
     if (!types.includes(file.mimetype)) {
         return cb(null, false)
     }
+
     return cb(null, true)
 }
 

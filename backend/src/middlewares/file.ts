@@ -50,12 +50,6 @@ const fileFilter = (
     file: Express.Multer.File,
     cb: FileFilterCallback
 ) => {
-    if (file.originalname.length > 2048) {
-        return cb(null, false)
-    }
-    if (!isValidFilename(file.originalname)) {
-        return cb(null, false)
-    }
     if (!types.includes(file.mimetype)) {
         return cb(null, false)
     }
@@ -65,7 +59,7 @@ const fileFilter = (
 
 const upload = multer({
     storage,
-    limits: { fileSize: 8000000 },
+    limits: { fileSize: 10000000 },
     fileFilter,
 })
 

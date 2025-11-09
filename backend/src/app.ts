@@ -19,8 +19,7 @@ import { cleanTempJob } from './utils/cron-config'
 const { PORT = 3000, ORIGIN_ALLOW } = process.env
 const app = express()
 
-//cleanTempJob.start()
-
+cleanTempJob.start()
 app.use(limiter)
 app.use(
     mongoSanitize({

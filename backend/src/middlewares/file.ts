@@ -3,7 +3,7 @@ import multer, { FileFilterCallback } from 'multer'
 import { join, extname } from 'path'
 // eslint-disable-next-line import/no-unresolved
 import { v4 as uuidv4 } from 'uuid'
-import { isValidFilename } from '../utils/is-valid-filename'
+import sanitize from 'sanitize-filename'
 
 type DestinationCallback = (error: Error | null, destination: string) => void
 type FileNameCallback = (error: Error | null, filename: string) => void
@@ -51,6 +51,9 @@ const fileFilter = (
     cb: FileFilterCallback
 ) => {
     if (!types.includes(file.mimetype)) {
+        return cb(null, false)
+    }
+    if(file.originalname !== sanitize(file.originalname)) {
         return cb(null, false)
     }
 

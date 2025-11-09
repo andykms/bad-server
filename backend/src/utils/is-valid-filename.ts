@@ -2,7 +2,6 @@ export const isValidFilename = (filename: string): boolean => {
     if (!filename || filename.length === 0 || filename.length > 2048) {
         return false
     }
-    /*
     // eslint-disable-next-line no-control-regex
     const forbiddenChars = /[<>:"|?*\\/\x00-\x1f]/
     if (forbiddenChars.test(filename)) {
@@ -50,6 +49,6 @@ export const isValidFilename = (filename: string): boolean => {
     if (/[\. ]$/.test(filename)) {
         return false
     }
-*/
+
     return true
 }

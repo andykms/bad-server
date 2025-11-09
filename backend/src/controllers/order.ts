@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { FilterQuery, Model, Error as MongooseError, Types } from 'mongoose'
+import { FilterQuery, Error as MongooseError, Types } from 'mongoose'
 import BadRequestError from '../errors/bad-request-error'
 import NotFoundError from '../errors/not-found-error'
 import Order, { IOrder } from '../models/order'
@@ -7,6 +7,7 @@ import Product, { IProduct } from '../models/product'
 import User from '../models/user'
 import { PROMISE_LIMIT_TIMEOUT } from '../config'
 import { timeLimitPromise } from '../utils/time-limit-promise'
+import escapeRegExp from 'escape-string-regexp';
 
 // eslint-disable-next-line max-len
 // GET /orders?page=2&limit=5&sort=totalAmount&order=desc&orderDateFrom=2024-07-01&orderDateTo=2024-08-01&status=delivering&totalAmountFrom=100&totalAmountTo=1000&search=%2B1
@@ -27,8 +28,9 @@ export const getOrders = async (
             totalAmountTo,
             orderDateFrom,
             orderDateTo,
-            search,
         } = req.query
+        
+        const search = escapeRegExp((req.query.search || "") as string);
 
         const filters: FilterQuery<Partial<IOrder>> = {}
 
@@ -158,7 +160,8 @@ export const getOrdersCurrentUser = async (
 ) => {
     try {
         const userId = res.locals.user._id
-        const { search, page = 1, limit = 5 } = req.query
+        const { page = 1, limit = 5 } = req.query
+        const search = escapeRegExp((req.query.search || "") as string);
         if(isNaN(Number(page)) || isNaN(Number(limit))) {
             throw new BadRequestError("");
         }

@@ -3,7 +3,7 @@ import multer, { FileFilterCallback } from 'multer'
 import { join, extname } from 'path'
 // eslint-disable-next-line import/no-unresolved
 import { v4 as uuidv4 } from 'uuid'
-import sanitize from 'sanitize-filename'
+import { isValidFilename } from '../utils/is-valid-filename'
 
 type DestinationCallback = (error: Error | null, destination: string) => void
 type FileNameCallback = (error: Error | null, filename: string) => void
@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
                 __dirname,
                 process.env.UPLOAD_PATH_TEMP
                     ? `../public/${process.env.UPLOAD_PATH_TEMP}`
-                    : '../public/temp'
+                    : '../public'
             )
         )
     },
@@ -50,10 +50,13 @@ const fileFilter = (
     file: Express.Multer.File,
     cb: FileFilterCallback
 ) => {
-    if (!types.includes(file.mimetype)) {
+    if (file.originalname.length > 255) {
         return cb(null, false)
     }
-    if(file.originalname !== sanitize(file.originalname)) {
+    if (!isValidFilename(file.originalname)) {
+        return cb(null, false)
+    }
+    if (!types.includes(file.mimetype)) {
         return cb(null, false)
     }
 
@@ -62,7 +65,7 @@ const fileFilter = (
 
 const upload = multer({
     storage,
-    limits: { fileSize: 20000000 },
+    limits: { fileSize: 8000000 },
     fileFilter,
 })
 

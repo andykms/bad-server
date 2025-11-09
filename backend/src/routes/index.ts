@@ -7,7 +7,7 @@ import customerRouter from './customers'
 import orderRouter from './order'
 import productRouter from './product'
 import uploadRouter from './upload'
-import csrfRouter from './csrf'
+//import csrfRouter from './csrf'
 
 const router = Router()
 
@@ -16,7 +16,7 @@ router.use('/product', productRouter)
 router.use('/order', auth, orderRouter)
 router.use('/upload', auth, uploadRouter)
 router.use('/customers', auth, customerRouter)
-router.use('/csrf', csrfRouter)
+//router.use('/csrf', csrfRouter)
 
 router.use((_req: Request, _res: Response, next: NextFunction) => {
     next(new NotFoundError('Маршрут не найден'))

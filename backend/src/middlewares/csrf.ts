@@ -1,5 +1,5 @@
 // middlewares/csrf.ts
-import csurf from 'csurf'
+/*import csurf from 'csurf'
 import { Request, Response, NextFunction } from 'express'
 
 export const csrfProtection = csurf({
@@ -15,3 +15,4 @@ export const csrfProtection = csurf({
 export const sendCsrfToken = (req: Request, res: Response, _: NextFunction) => {
     res.send({ csrfToken: req.csrfToken() })
 }
+*/

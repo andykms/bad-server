@@ -12,7 +12,7 @@ import errorHandler from './middlewares/error-handler'
 import serveStatic from './middlewares/serverStatic'
 import routes from './routes'
 import { bodyXssValidator } from './middlewares/body-xss-validator'
-import { csrfProtection } from './middlewares/csrf'
+//import { csrfProtection } from './middlewares/csrf'
 import { limiter } from './middlewares/rate-limiter'
 import { cleanTempJob } from './utils/cron-config'
 

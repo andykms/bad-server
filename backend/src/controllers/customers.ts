@@ -147,7 +147,7 @@ export const getCustomers = async (
                 totalUsers,
                 totalPages,
                 currentPage: Number(page),
-                pageSize: Number(limit),
+                pageSize: Math.min(totalUsers, Number(limit)),
             },
         })
     } catch (error) {

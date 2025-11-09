@@ -38,7 +38,7 @@ app.use(urlencoded({ extended: true }))
 app.use(json())
 
 app.options('*', cors())
-//app.use(csrfProtection)
+app.use(csrfProtection)
 app.use(bodyXssValidator)
 app.use(routes)
 app.use(errors())

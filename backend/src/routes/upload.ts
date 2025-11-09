@@ -6,7 +6,6 @@ import { csrfProtection } from '../middlewares/csrf'
 const uploadRouter = Router()
 uploadRouter.post(
     '/',
-    csrfProtection,
     fileMiddleware.single('file'),
     uploadFile
 )

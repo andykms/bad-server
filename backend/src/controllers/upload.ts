@@ -3,7 +3,8 @@ import { constants } from 'http2'
 import BadRequestError from '../errors/bad-request-error'
 import { MIN_IMAGE_SIZE } from '../config'
 import { extname } from 'path'
-
+import { unlink } from 'fs/promises'
+import { isValidImageSignature, isValidSVG } from '../utils/file-signature-check'
 
 const types = [
     'image/png',
@@ -22,7 +23,13 @@ export const uploadFile = async (
     if (!req.file) {
         return next(new BadRequestError('Файл не загружен'))
     }
+
+    if(!req.file.path) {
+        return next(new BadRequestError("неизвестный путь"))
+    }
+
     if(req.file.size < MIN_IMAGE_SIZE) {
+        await unlink(req.file.path);
         return next(new BadRequestError(''))
     }
 
@@ -30,13 +37,22 @@ export const uploadFile = async (
         return next(new BadRequestError('неверные типы'))
     }
 
-    if(!req.file.path) {
-        return next(new BadRequestError(""))
-    }
-
     if(!types.map((type)=>`.${type.split("/")[1]}`).includes(extname(req.file.path))) {
         return next(new BadRequestError("неверный формат"))
     }
+
+    const isValidSignature = await isValidImageSignature(req.file.path);
+
+    let isActuallyValidImage = isValidSignature;
+    if (!isValidSignature && req.file.mimetype === 'image/svg+xml') {
+      isActuallyValidImage = await isValidSVG(req.file.path);
+    }
+
+    if (!isActuallyValidImage) {
+      await unlink(req.file.path);
+      return next(new BadRequestError('Файл не является корректным изображением'));
+    }
+
 
     try {
         const fileName = process.env.UPLOAD_PATH

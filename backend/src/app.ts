@@ -27,7 +27,7 @@ app.use(
         replaceWith: '_',
     })
 )
-app.use(helmet())
+//app.use(helmet())
 app.use(cookieParser())
 
 app.use(cors({ origin: ORIGIN_ALLOW, credentials: true }))

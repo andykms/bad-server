@@ -23,6 +23,7 @@ enum validationParams {
     MAX_SEARCH_LEN = 32,
     MAX_DESCRIPTION_LEN = 1024,
     MAX_SHORT_WORD_LEN = 16,
+    MIN_LIMIT_PAGINATION = 1,
     MAX_LIMIT_PAGINATION = 20,
     MAX_PAGE_PAGINATION=100
 }
@@ -244,7 +245,7 @@ export const validateRegisterUser = celebrate({
 
 export const getCustomerValidation = celebrate({
     query: Joi.object().keys({
-        limit: Joi.string().min(1).max(3).custom(customMaxNumberAsString({min: 0, max: validationParams.MAX_LIMIT_PAGINATION})),
+        limit: Joi.string().min(1).max(3).custom(customMaxNumberAsString({min: validationParams.MIN_LIMIT_PAGINATION, max: validationParams.MAX_LIMIT_PAGINATION})),
         page: Joi.string()
             .min(1)
             .max(validationParams.MAX_INT_NUM_COUNT)
@@ -310,7 +311,7 @@ export const validatePatchCustomer = celebrate({
 
 export const getOrdersValidation = celebrate({
     query: Joi.object().keys({
-        limit: Joi.string().min(1).max(3).custom(customMaxNumberAsString({min: 0, max: validationParams.MAX_LIMIT_PAGINATION})),
+        limit: Joi.string().min(1).max(3).custom(customMaxNumberAsString({min: validationParams.MIN_LIMIT_PAGINATION, max: validationParams.MAX_LIMIT_PAGINATION})),
         page: Joi.string()
             .min(1)
             .max(validationParams.MAX_INT_NUM_COUNT)
@@ -333,7 +334,7 @@ export const getOrdersValidation = celebrate({
 
 export const getOrdersCurrentUserValidation = celebrate({
     query: Joi.object().keys({
-        limit: Joi.string().min(1).max(3).custom(customMaxNumberAsString({min: 0, max: validationParams.MAX_LIMIT_PAGINATION})),
+        limit: Joi.string().min(1).max(3).custom(customMaxNumberAsString({min: validationParams.MIN_LIMIT_PAGINATION, max: validationParams.MAX_LIMIT_PAGINATION})),
         page: Joi.string()
             .min(1)
             .max(validationParams.MAX_INT_NUM_COUNT)
@@ -357,6 +358,6 @@ export const validationProducts = celebrate({
             .min(1)
             .max(validationParams.MAX_INT_NUM_COUNT)
             .custom(customMaxNumberAsString({min: 0, max: validationParams.MAX_PAGE_PAGINATION})),
-        limit: Joi.string().min(1).max(3).custom(customMaxNumberAsString({min: 0, max: validationParams.MAX_LIMIT_PAGINATION})),
+        limit: Joi.string().min(1).max(3).custom(customMaxNumberAsString({min: validationParams.MIN_LIMIT_PAGINATION, max: validationParams.MAX_LIMIT_PAGINATION})),
     }),
 })

@@ -19,10 +19,12 @@ enum validationParams {
     MIN_PASSWORD = 6,
     MIN_NAME = 2,
     MAX_NAME = 30,
-    MAX_INT_NUM_COUNT = 15,
+    MAX_INT_NUM_COUNT = 8,
     MAX_SEARCH_LEN = 32,
     MAX_DESCRIPTION_LEN = 1024,
-    MAX_SHORT_WORD_LEN = 16
+    MAX_SHORT_WORD_LEN = 16,
+    MAX_LIMIT_PAGINATION = 20,
+    MAX_PAGE_PAGINATION=100
 }
 
 const stringIsNumber = (value: string, helpers: _joi.CustomHelpers) => {
@@ -242,11 +244,11 @@ export const validateRegisterUser = celebrate({
 
 export const getCustomerValidation = celebrate({
     query: Joi.object().keys({
-        limit: Joi.string().min(1).max(3).custom(customMaxNumberAsString({min: 0, max: 100})),
+        limit: Joi.string().min(1).max(3).custom(customMaxNumberAsString({min: 0, max: validationParams.MAX_LIMIT_PAGINATION})),
         page: Joi.string()
             .min(1)
             .max(validationParams.MAX_INT_NUM_COUNT)
-            .custom(customMaxNumberAsString({min: 0, max: Number.MAX_SAFE_INTEGER})),
+            .custom(customMaxNumberAsString({min: 0, max: validationParams.MAX_PAGE_PAGINATION})),
         sortField: Joi.string().max(validationParams.MAX_SHORT_WORD_LEN),
         sortOrder: Joi.string().max(validationParams.MAX_SHORT_WORD_LEN),
         registrationDateFrom: Joi.date().format('YYYY-MM-DD').max(Date.now()),
@@ -308,11 +310,11 @@ export const validatePatchCustomer = celebrate({
 
 export const getOrdersValidation = celebrate({
     query: Joi.object().keys({
-        limit: Joi.string().min(1).max(3).custom(customMaxNumberAsString({min: 0, max: 100})),
+        limit: Joi.string().min(1).max(3).custom(customMaxNumberAsString({min: 0, max: validationParams.MAX_LIMIT_PAGINATION})),
         page: Joi.string()
             .min(1)
             .max(validationParams.MAX_INT_NUM_COUNT)
-            .custom(customMaxNumberAsString({min: 1, max: Number.MAX_SAFE_INTEGER})),
+            .custom(customMaxNumberAsString({min: 1, max: validationParams.MAX_PAGE_PAGINATION})),
         sortField: Joi.string().max(validationParams.MAX_SHORT_WORD_LEN),
         sortOrder: Joi.string().max(validationParams.MAX_SHORT_WORD_LEN),
         status: Joi.string().max(validationParams.MAX_SHORT_WORD_LEN),
@@ -331,11 +333,11 @@ export const getOrdersValidation = celebrate({
 
 export const getOrdersCurrentUserValidation = celebrate({
     query: Joi.object().keys({
-        limit: Joi.string().min(1).max(3).custom(customMaxNumberAsString({min: 0, max: 100})),
+        limit: Joi.string().min(1).max(3).custom(customMaxNumberAsString({min: 0, max: validationParams.MAX_LIMIT_PAGINATION})),
         page: Joi.string()
             .min(1)
             .max(validationParams.MAX_INT_NUM_COUNT)
-            .custom(customMaxNumberAsString({min: 0, max: Number.MAX_SAFE_INTEGER})),
+            .custom(customMaxNumberAsString({min: 0, max: validationParams.MAX_PAGE_PAGINATION})),
         search: Joi.string().max(validationParams.MAX_SEARCH_LEN),
     }),
 })
@@ -354,7 +356,7 @@ export const validationProducts = celebrate({
         page: Joi.string()
             .min(1)
             .max(validationParams.MAX_INT_NUM_COUNT)
-            .custom(customMaxNumberAsString({min: 0, max: Number.MAX_SAFE_INTEGER})),
-        limit: Joi.string().min(1).max(3).custom(customMaxNumberAsString({min: 0, max: 100})),
+            .custom(customMaxNumberAsString({min: 0, max: validationParams.MAX_PAGE_PAGINATION})),
+        limit: Joi.string().min(1).max(3).custom(customMaxNumberAsString({min: 0, max: validationParams.MAX_LIMIT_PAGINATION})),
     }),
 })

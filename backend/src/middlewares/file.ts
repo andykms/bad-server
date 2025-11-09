@@ -1,8 +1,10 @@
-import { Request, Express } from 'express'
+import { Request } from 'express'
 import multer, { FileFilterCallback } from 'multer'
 import { join } from 'path'
 import { v4 as uuidv4 } from 'uuid'
 import { extname } from 'path'
+import { isValidFilename } from '../utils/is-valid-filename'
+
 
 type DestinationCallback = (error: Error | null, destination: string) => void
 type FileNameCallback = (error: Error | null, filename: string) => void
@@ -41,12 +43,19 @@ const types = [
     'image/svg+xml',
 ]
 
+const options = {
+    replacement: '_' 
+};
+
 const fileFilter = (
     _req: Request,
     file: Express.Multer.File,
     cb: FileFilterCallback
 ) => {
     if(file.originalname.length > 128) {
+        return cb(null, false);
+    }
+    if(!isValidFilename(file.originalname)) {
         return cb(null, false);
     }
     if (!types.includes(file.mimetype)) {

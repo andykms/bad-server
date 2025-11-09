@@ -1,8 +1,7 @@
 # Проектная работа "WebLarek. Плохой сервер.", спринт 17
-
-Ссылка https://github.com/andykms/bad-server
-Имя Андрей
-Когорта 31
+https://github.com/andykms/bad-server
+Андрей
+31
 
 ## Курс
 

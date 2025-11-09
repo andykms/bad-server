@@ -34,7 +34,7 @@ export const uploadFile = async (
         return next(new BadRequestError(""))
     }
 
-    if(types.map((type)=>type.split("/")[1]).includes(extname(req.file.path))) {
+    if(!types.map((type)=>`.${type.split("/")[1]}`).includes(extname(req.file.path))) {
         return next(new BadRequestError(""))
     }
 

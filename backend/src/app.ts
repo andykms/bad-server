@@ -19,7 +19,7 @@ import { cleanTempJob } from './utils/cron-config'
 const { PORT = 3000, ORIGIN_ALLOW } = process.env
 const app = express()
 
-cleanTempJob.start()
+//cleanTempJob.start()
 
 app.use(limiter)
 app.use(
@@ -27,7 +27,7 @@ app.use(
         replaceWith: '_',
     })
 )
-//app.use(helmet())
+app.use(helmet())
 app.use(cookieParser())
 
 app.use(cors({ origin: ORIGIN_ALLOW, credentials: true }))

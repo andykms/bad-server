@@ -53,11 +53,6 @@ const types = [
     'image/jpeg',
     'image/gif',
     'image/svg+xml',
-    'image/tiff',
-    'image/webp',
-    'image/heic',
-    'image/avif',
-    'image/pjpeg',
 ]
 
 const fileFilter = (
@@ -65,7 +60,7 @@ const fileFilter = (
     file: Express.Multer.File,
     cb: FileFilterCallback
 ) => {
-    if(!file || file.size <= 0) {
+    if(!file || file.size < 2 * 1024) {
         return cb(null, false);
     }
 
@@ -85,7 +80,7 @@ const fileFilter = (
 const upload = multer({
     dest: getUploadPath(),
     storage,
-    limits: { fileSize: 20000000 },
+    limits: { fileSize: 10 * 1024 * 1024 },
     fileFilter,
 })
 

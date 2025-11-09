@@ -112,7 +112,7 @@ const deleteRefreshTokenInUser = async (
         REFRESH_TOKEN.secret
     ) as JwtPayload
     const user = await User.findOne({
-        _id: { $toString: decodedRefreshTkn._id },
+        _id: decodedRefreshTkn._id,
     }).orFail(() => new UnauthorizedError('Пользователь не найден в базе'))
 
     const rTknHash = crypto

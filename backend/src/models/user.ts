@@ -179,9 +179,7 @@ userSchema.statics.findUserByCredentials = async function findByCredentials(
     password: string
 ) {
     const user = await this.findOne({
-        email: {
-            $toString: email,
-        },
+        email
     })
         .select('+password')
         .orFail(() => new UnauthorizedError('Неправильные почта или пароль'))

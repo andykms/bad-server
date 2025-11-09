@@ -1,5 +1,8 @@
-import { Joi, celebrate } from 'celebrate'
+import { Joi as _joi, celebrate } from 'celebrate'
 import { Types } from 'mongoose'
+import joiDate from "@joi/date";
+const Joi = _joi.extend(joiDate) as typeof _joi;
+
 
 // eslint-disable-next-line no-useless-escape
 export const phoneRegExp = /^(\+\d+)?(?:\s|-?|\(?\d+\)?)+$/
@@ -13,7 +16,7 @@ enum validationParams {
     MIN_EMAIL = 5,
     MAX_EMAIL = 128,
     MAX_PASSWORD = 2048,
-    MIN_PASSWORD = 12,
+    MIN_PASSWORD = 8,
     MIN_NAME = 2,
     MAX_NAME = 30,
     MAX_INT_NUM_COUNT = 15,
@@ -22,7 +25,7 @@ enum validationParams {
     MAX_SHORT_WORD_LEN = 16
 }
 
-const stringIsNumber = (value: string, helpers: Joi.CustomHelpers) => {
+const stringIsNumber = (value: string, helpers: _joi.CustomHelpers) => {
     if (
         isNaN(Number(value)) ||
         !isFinite(Number(value)) ||
@@ -40,7 +43,7 @@ const customMaxNumberAsString = ({
     min: number
     max: number
 }) => {
-    return function (value: string, helpers: Joi.CustomHelpers) {
+    return function (value: string, helpers: _joi.CustomHelpers) {
         const num = Number(value)
 
         if (
@@ -239,33 +242,31 @@ export const validateRegisterUser = celebrate({
 
 export const getCustomerValidation = celebrate({
     query: Joi.object().keys({
-        limit: Joi.string().min(1).max(3).custom(customMaxNumberAsString({min: 1, max: 100})),
+        limit: Joi.string().min(1).max(3).custom(customMaxNumberAsString({min: 0, max: 100})),
         page: Joi.string()
             .min(1)
             .max(validationParams.MAX_INT_NUM_COUNT)
-            .custom(customMaxNumberAsString({min: 1, max: Number.MAX_SAFE_INTEGER})),
+            .custom(customMaxNumberAsString({min: 0, max: Number.MAX_SAFE_INTEGER})),
         sortField: Joi.string().max(validationParams.MAX_SHORT_WORD_LEN),
         sortOrder: Joi.string().max(validationParams.MAX_SHORT_WORD_LEN),
-        registrationDateFrom: Joi.date().max(Date.now()),
-        registrationDateTo: Joi.date()
-            .max(Date.now())
-            .min(Joi.ref('registrationDateFrom')),
-        lastOrderDateFrom: Joi.date().max(Date.now()),
-        lastOrderDateTo: Joi.date()
-            .max(Date.now())
-            .min(Joi.ref('lastOrderDateFrom')),
+        registrationDateFrom: Joi.date().format('YYYY-MM-DD').max(Date.now()),
+        registrationDateTo: Joi.date().format('YYYY-MM-DD')
+            .max(Date.now()),
+        lastOrderDateFrom: Joi.date().format('YYYY-MM-DD').max(Date.now()),
+        lastOrderDateTo: Joi.date().format('YYYY-MM-DD')
+            .max(Date.now()),
         totalAmountFrom: Joi.string()
             .max(validationParams.MAX_INT_NUM_COUNT)
-            .custom(customMaxNumberAsString({min: 1, max: Number.MAX_SAFE_INTEGER})),
+            .custom(customMaxNumberAsString({min: 0, max: Number.MAX_SAFE_INTEGER})),
         totalAmountTo: Joi.string()
             .max(validationParams.MAX_INT_NUM_COUNT)
-            .custom(customMaxNumberAsString({min: 1, max: Number.MAX_SAFE_INTEGER})),
+            .custom(customMaxNumberAsString({min: 0, max: Number.MAX_SAFE_INTEGER})),
         orderCountFrom: Joi.string()
             .max(validationParams.MAX_INT_NUM_COUNT)
-            .custom(customMaxNumberAsString({min: 1, max: Number.MAX_SAFE_INTEGER})),
+            .custom(customMaxNumberAsString({min: 0, max: Number.MAX_SAFE_INTEGER})),
         orderCountTo: Joi.string()
             .max(validationParams.MAX_INT_NUM_COUNT)
-            .custom(customMaxNumberAsString({min: 1, max: Number.MAX_SAFE_INTEGER})),
+            .custom(customMaxNumberAsString({min: 0, max: Number.MAX_SAFE_INTEGER})),
         search: Joi.string().max(validationParams.MAX_SEARCH_LEN),
     }),
 })
@@ -295,19 +296,19 @@ export const validatePatchCustomer = celebrate({
                 'string.empty': 'Поле "email" должно быть заполнено',
                 'string.max': 'Валидация не прошла',
             }),
-        lastOrderDate: Joi.date().max(Date.now()),
+        lastOrderDate: Joi.date().format('YYYY-MM-DD').max(Date.now()),
         totalAmount: Joi.string()
             .max(validationParams.MAX_INT_NUM_COUNT)
-            .custom(customMaxNumberAsString({min: 1, max: Number.MAX_SAFE_INTEGER})),
+            .custom(customMaxNumberAsString({min: 0, max: Number.MAX_SAFE_INTEGER})),
         orderCount: Joi.string()
             .max(validationParams.MAX_INT_NUM_COUNT)
-            .custom(customMaxNumberAsString({min: 1, max: Number.MAX_SAFE_INTEGER})),
+            .custom(customMaxNumberAsString({min: 0, max: Number.MAX_SAFE_INTEGER})),
     }),
 })
 
 export const getOrdersValidation = celebrate({
     query: Joi.object().keys({
-        limit: Joi.string().min(1).max(3).custom(customMaxNumberAsString({min: 1, max: 100})),
+        limit: Joi.string().min(1).max(3).custom(customMaxNumberAsString({min: 0, max: 100})),
         page: Joi.string()
             .min(1)
             .max(validationParams.MAX_INT_NUM_COUNT)
@@ -317,25 +318,24 @@ export const getOrdersValidation = celebrate({
         status: Joi.string().max(validationParams.MAX_SHORT_WORD_LEN),
         totalAmountFrom: Joi.string()
             .max(validationParams.MAX_INT_NUM_COUNT)
-            .custom(customMaxNumberAsString({min: 1, max: Number.MAX_SAFE_INTEGER})),
+            .custom(customMaxNumberAsString({min: 0, max: Number.MAX_SAFE_INTEGER})),
         totalAmountTo: Joi.string()
             .max(validationParams.MAX_INT_NUM_COUNT)
-            .custom(customMaxNumberAsString({min: 1, max: Number.MAX_SAFE_INTEGER})),
-        orderDateFrom: Joi.date().max(Date.now()),
-        orderDateTo: Joi.date()
-            .max(Date.now())
-            .min(Joi.ref('registrationDateFrom')),
+            .custom(customMaxNumberAsString({min: 0, max: Number.MAX_SAFE_INTEGER})),
+        orderDateFrom: Joi.date().format('YYYY-MM-DD').max(Date.now()),
+        orderDateTo: Joi.date().format('YYYY-MM-DD')
+            .max(Date.now()),
         search: Joi.string().max(validationParams.MAX_SEARCH_LEN),
     }),
 })
 
 export const getOrdersCurrentUserValidation = celebrate({
     query: Joi.object().keys({
-        limit: Joi.string().min(1).max(3).custom(customMaxNumberAsString({min: 1, max: 100})),
+        limit: Joi.string().min(1).max(3).custom(customMaxNumberAsString({min: 0, max: 100})),
         page: Joi.string()
             .min(1)
             .max(validationParams.MAX_INT_NUM_COUNT)
-            .custom(customMaxNumberAsString({min: 1, max: Number.MAX_SAFE_INTEGER})),
+            .custom(customMaxNumberAsString({min: 0, max: Number.MAX_SAFE_INTEGER})),
         search: Joi.string().max(validationParams.MAX_SEARCH_LEN),
     }),
 })
@@ -354,7 +354,7 @@ export const validationProducts = celebrate({
         page: Joi.string()
             .min(1)
             .max(validationParams.MAX_INT_NUM_COUNT)
-            .custom(customMaxNumberAsString({min: 1, max: Number.MAX_SAFE_INTEGER})),
-        limit: Joi.string().min(1).max(3).custom(customMaxNumberAsString({min: 1, max: 100})),
+            .custom(customMaxNumberAsString({min: 0, max: Number.MAX_SAFE_INTEGER})),
+        limit: Joi.string().min(1).max(3).custom(customMaxNumberAsString({min: 0, max: 100})),
     }),
 })

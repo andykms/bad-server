@@ -13,11 +13,14 @@ import { bodyXssValidator } from './middlewares/body-xss-validator'
 import { csrfProtection } from './middlewares/csrf'
 import { limiter } from './middlewares/rate-limiter'
 import { cleanTempJob } from './utils/cron-config'
+import helmet from 'helmet'
 
 const { PORT = 3000, ORIGIN_ALLOW } = process.env
 const app = express()
 
 cleanTempJob.start()
+
+app.use(helmet())
 
 app.use(limiter)
 app.use(cookieParser())

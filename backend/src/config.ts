@@ -22,3 +22,5 @@ export const REFRESH_TOKEN = {
         } as CookieOptions,
     },
 }
+
+export const PROMISE_LIMIT_TIMEOUT = Number(process.env.PROMISE_LIMIT_TIMEOUT) || 10000;

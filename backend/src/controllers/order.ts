@@ -20,7 +20,6 @@ export const getOrders = async (
     try {
         const {
             page = 1,
-            limit = 10,
             sortField = 'createdAt',
             sortOrder = 'desc',
             status,
@@ -31,6 +30,7 @@ export const getOrders = async (
         } = req.query
 
         const search = escapeRegExp((req.query.search || '') as string)
+        const limit = Math.min(Number(req.query.limit), 10)
 
         const filters: FilterQuery<Partial<IOrder>> = {}
 
@@ -167,8 +167,8 @@ export const getOrdersCurrentUser = async (
         const { page = 1, limit = 5 } = req.query
         const search = escapeRegExp((req.query.search || '') as string)
         const options = {
-            skip: (Number(page) - 1) * Number(limit),
-            limit: Number(limit),
+            skip: (Number(page) - 1) * Math.min(Number(limit), 10),
+            limit: Math.min(Number(limit), 10),
         }
 
         const user = await User.findById(userId)

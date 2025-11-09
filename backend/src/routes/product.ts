@@ -10,12 +10,13 @@ import {
     validateObjId,
     validateProductBody,
     validateProductUpdateBody,
+    validationProducts,
 } from '../middlewares/validations'
 import { Role } from '../models/user'
 
 const productRouter = Router()
 
-productRouter.get('/', getProducts)
+productRouter.get('/', validationProducts, getProducts)
 productRouter.post(
     '/',
     auth,
@@ -25,6 +26,7 @@ productRouter.post(
 )
 productRouter.delete(
     '/:productId',
+    auth,
     auth,
     roleGuardMiddleware(Role.Admin),
     validateObjId,

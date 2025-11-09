@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { FilterQuery } from 'mongoose'
+import escapeRegExp from 'escape-string-regexp'
 import NotFoundError from '../errors/not-found-error'
 import Order from '../models/order'
 import User, { IUser } from '../models/user'
@@ -26,8 +27,9 @@ export const getCustomers = async (
             totalAmountTo,
             orderCountFrom,
             orderCountTo,
-            search,
         } = req.query
+
+        const search = escapeRegExp((req.query.search || '') as string)
 
         const filters: FilterQuery<Partial<IUser>> = {}
 
@@ -145,7 +147,7 @@ export const getCustomers = async (
                 totalUsers,
                 totalPages,
                 currentPage: Number(page),
-                pageSize: Number(limit),
+                pageSize: Math.min(totalUsers, Number(limit)),
             },
         })
     } catch (error) {

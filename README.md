@@ -1,4 +1,11 @@
 # Проектная работа "WebLarek. Плохой сервер.", спринт 17
+https://github.com/andykms/bad-server
+Андрей
+31
+
+## Курс
+
+`Фулстек-разработчик`
 
 https://github.com/andykms/bad-server
 
@@ -13,4 +20,5 @@ docker compose up -d
 4. Перейти по адресу http://localhost/ и на странице должны быть продукты.
 5. На странице http://localhost/login/ можно авторизоваться.
 6. Админка находится по адресу http://localhost/admin/
+
 

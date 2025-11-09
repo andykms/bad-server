@@ -36,7 +36,11 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 const register = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email, password, name } = req.body
-        const newUser = new User({ email, password, name })
+        const newUser = new User({
+            email,
+            password,
+            name,
+        })
         await newUser.save()
         const accessToken = newUser.generateAccessToken()
         const refreshToken = await newUser.generateRefreshToken()

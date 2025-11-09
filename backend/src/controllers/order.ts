@@ -1,10 +1,13 @@
 import { NextFunction, Request, Response } from 'express'
-import { FilterQuery, Error as MongooseError, Types } from 'mongoose'
+import mongoose, { FilterQuery, Error as MongooseError, Types } from 'mongoose'
+import escapeRegExp from 'escape-string-regexp'
 import BadRequestError from '../errors/bad-request-error'
 import NotFoundError from '../errors/not-found-error'
 import Order, { IOrder } from '../models/order'
 import Product, { IProduct } from '../models/product'
 import User from '../models/user'
+import { PROMISE_LIMIT_TIMEOUT } from '../config'
+import { timeLimitPromise } from '../utils/time-limit-promise'
 
 // eslint-disable-next-line max-len
 // GET /orders?page=2&limit=5&sort=totalAmount&order=desc&orderDateFrom=2024-07-01&orderDateTo=2024-08-01&status=delivering&totalAmountFrom=100&totalAmountTo=1000&search=%2B1
@@ -25,8 +28,9 @@ export const getOrders = async (
             totalAmountTo,
             orderDateFrom,
             orderDateTo,
-            search,
         } = req.query
+
+        const search = escapeRegExp((req.query.search || '') as string)
 
         const filters: FilterQuery<Partial<IOrder>> = {}
 
@@ -131,7 +135,11 @@ export const getOrders = async (
             }
         )
 
-        const orders = await Order.aggregate(aggregatePipeline)
+        const orders = await timeLimitPromise<unknown>(
+            Order.aggregate(aggregatePipeline),
+            PROMISE_LIMIT_TIMEOUT,
+            'не удалось обработать запрос.'
+        )
         const totalOrders = await Order.countDocuments(filters)
         const totalPages = Math.ceil(totalOrders / Number(limit))
 
@@ -141,7 +149,7 @@ export const getOrders = async (
                 totalOrders,
                 totalPages,
                 currentPage: Number(page),
-                pageSize: Number(limit),
+                pageSize: Math.min(totalOrders, Number(limit)),
             },
         })
     } catch (error) {
@@ -156,7 +164,8 @@ export const getOrdersCurrentUser = async (
 ) => {
     try {
         const userId = res.locals.user._id
-        const { search, page = 1, limit = 5 } = req.query
+        const { page = 1, limit = 5 } = req.query
+        const search = escapeRegExp((req.query.search || '') as string)
         const options = {
             skip: (Number(page) - 1) * Number(limit),
             limit: Number(limit),
@@ -193,7 +202,9 @@ export const getOrdersCurrentUser = async (
             orders = orders.filter((order) => {
                 // eslint-disable-next-line max-len
                 const matchesProductTitle = order.products.some((product) =>
-                    productIds.some((id) => id.equals(product._id))
+                    productIds.some((id) =>
+                        (id as mongoose.Types.ObjectId).equals(product._id)
+                    )
                 )
                 // eslint-disable-next-line max-len
                 const matchesOrderNumber =
@@ -215,7 +226,7 @@ export const getOrdersCurrentUser = async (
                 totalOrders,
                 totalPages,
                 currentPage: Number(page),
-                pageSize: Number(limit),
+                pageSize: Math.min(totalOrders, Number(limit)),
             },
         })
     } catch (error) {
@@ -291,8 +302,9 @@ export const createOrder = async (
         const basket: IProduct[] = []
         const products = await Product.find<IProduct>({})
         const userId = res.locals.user._id
-        const { address, payment, phone, total, email, items, comment } =
-            req.body
+
+        // eslint-disable-next-line prefer-const
+        let { address, payment, phone, total, email, items, comment } = req.body
 
         items.forEach((id: Types.ObjectId) => {
             const product = products.find((p) => p._id.equals(id))

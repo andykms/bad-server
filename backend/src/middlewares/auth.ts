@@ -12,10 +12,10 @@ import UserModel, { Role } from '../models/user'
 const auth = async (req: Request, res: Response, next: NextFunction) => {
     let payload: JwtPayload | null = null
     const authHeader = req.header('Authorization')
-    if (!authHeader?.startsWith('Bearer ')) {
-        throw new UnauthorizedError('Невалидный токен')
-    }
     try {
+        if (!authHeader?.startsWith('Bearer ')) {
+            throw new UnauthorizedError('Невалидный токен')
+        }
         const accessTokenParts = authHeader.split(' ')
         const aTkn = accessTokenParts[1]
         payload = jwt.verify(aTkn, ACCESS_TOKEN.secret) as JwtPayload

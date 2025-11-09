@@ -14,6 +14,7 @@ export enum Role {
 }
 
 export interface IUser extends Document {
+    _id: mongoose.Types.ObjectId
     name: string
     email: string
     password: string
@@ -48,6 +49,11 @@ const userSchema = new mongoose.Schema<IUser, IUserModel, IUserMethods>(
             default: 'Евлампий',
             minlength: [2, 'Минимальная длина поля "name" - 2'],
             maxlength: [30, 'Максимальная длина поля "name" - 30'],
+            validate: {
+                validator: (v: string) =>
+                    !v.includes('$') && !/\b(\$where|\$eq|\$ne)\b/.test(v),
+                message: 'Имя содержит запрещенные символы',
+            },
         },
         // в схеме пользователя есть обязательные email и password
         email: {
@@ -55,9 +61,9 @@ const userSchema = new mongoose.Schema<IUser, IUserModel, IUserMethods>(
             required: [true, 'Поле "email" должно быть заполнено'],
             unique: true, // поле email уникально (есть опция unique: true);
             validate: {
-                // для проверки email студенты используют validator
-                validator: (v: string) => validator.isEmail(v),
-                message: 'Поле "email" должно быть валидным email-адресом',
+                validator: (v: string) =>
+                    !v.includes('$') && validator.isEmail(v),
+                message: 'поле Email не валидно.',
             },
         },
         // поле password не имеет ограничения на длину, т.к. пароль хранится в виде хэша
@@ -106,13 +112,14 @@ const userSchema = new mongoose.Schema<IUser, IUserModel, IUserMethods>(
         toJSON: {
             virtuals: true,
             transform: (_doc, ret) => {
-                delete ret.tokens
-                delete ret.password
-                delete ret._id
-                delete ret.roles
+                delete (ret as any).tokens
+                delete (ret as any).password
+                delete (ret as any)._id
+                delete (ret as any).roles
                 return ret
             },
         },
+        strict: true,
     }
 )
 
@@ -178,7 +185,9 @@ userSchema.statics.findUserByCredentials = async function findByCredentials(
     email: string,
     password: string
 ) {
-    const user = await this.findOne({ email })
+    const user = await this.findOne({
+        email,
+    })
         .select('+password')
         .orFail(() => new UnauthorizedError('Неправильные почта или пароль'))
     const passwdMatch = md5(password) === user.password

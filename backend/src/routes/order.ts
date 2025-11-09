@@ -9,23 +9,48 @@ import {
     updateOrder,
 } from '../controllers/order'
 import auth, { roleGuardMiddleware } from '../middlewares/auth'
-import { validateOrderBody } from '../middlewares/validations'
+import {
+    validateOrderBody,
+    getOrdersCurrentUserValidation,
+    getOrdersValidation,
+    validationOrderByNumber,
+    validateProductUpdateBody,
+} from '../middlewares/validations'
 import { Role } from '../models/user'
 
 const orderRouter = Router()
 
 orderRouter.post('/', auth, validateOrderBody, createOrder)
-orderRouter.get('/all', auth, getOrders)
-orderRouter.get('/all/me', auth, getOrdersCurrentUser)
+orderRouter.get(
+    '/all',
+    getOrdersValidation,
+    auth,
+    roleGuardMiddleware(Role.Admin),
+    getOrders
+)
+orderRouter.get(
+    '/all/me',
+    getOrdersCurrentUserValidation,
+    auth,
+    getOrdersCurrentUser
+)
 orderRouter.get(
     '/:orderNumber',
     auth,
+    validationOrderByNumber,
     roleGuardMiddleware(Role.Admin),
     getOrderByNumber
 )
-orderRouter.get('/me/:orderNumber', auth, getOrderCurrentUserByNumber)
+orderRouter.get(
+    '/me/:orderNumber',
+    auth,
+    validationOrderByNumber,
+    getOrderCurrentUserByNumber
+)
 orderRouter.patch(
     '/:orderNumber',
+    validateProductUpdateBody,
+    auth,
     auth,
     roleGuardMiddleware(Role.Admin),
     updateOrder

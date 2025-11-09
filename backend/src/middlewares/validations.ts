@@ -241,7 +241,6 @@ export const getCustomerValidation = celebrate({
     query: Joi.object().keys({
         limit: Joi.string()
             .min(1)
-            .max(3)
             .custom(
                 customMaxNumberAsString({
                     min: validationParams.MIN_LIMIT_PAGINATION,
@@ -250,7 +249,6 @@ export const getCustomerValidation = celebrate({
             ),
         page: Joi.string()
             .min(1)
-            .max(validationParams.MAX_INT_NUM_COUNT)
             .custom(
                 customMaxNumberAsString({
                     min: 0,
@@ -348,7 +346,6 @@ export const getOrdersValidation = celebrate({
     query: Joi.object().keys({
         limit: Joi.string()
             .min(1)
-            .max(3)
             .custom(
                 customMaxNumberAsString({
                     min: validationParams.MIN_LIMIT_PAGINATION,
@@ -357,7 +354,6 @@ export const getOrdersValidation = celebrate({
             ),
         page: Joi.string()
             .min(1)
-            .max(validationParams.MAX_INT_NUM_COUNT)
             .custom(
                 customMaxNumberAsString({
                     min: 1,
@@ -393,7 +389,6 @@ export const getOrdersCurrentUserValidation = celebrate({
     query: Joi.object().keys({
         limit: Joi.string()
             .min(1)
-            .max(3)
             .custom(
                 customMaxNumberAsString({
                     min: validationParams.MIN_LIMIT_PAGINATION,
@@ -402,7 +397,6 @@ export const getOrdersCurrentUserValidation = celebrate({
             ),
         page: Joi.string()
             .min(1)
-            .max(validationParams.MAX_INT_NUM_COUNT)
             .custom(
                 customMaxNumberAsString({
                     min: 0,
@@ -426,7 +420,6 @@ export const validationProducts = celebrate({
     query: Joi.object().keys({
         page: Joi.string()
             .min(1)
-            .max(validationParams.MAX_INT_NUM_COUNT)
             .custom(
                 customMaxNumberAsString({
                     min: 0,
@@ -435,7 +428,6 @@ export const validationProducts = celebrate({
             ),
         limit: Joi.string()
             .min(1)
-            .max(3)
             .custom(
                 customMaxNumberAsString({
                     min: validationParams.MIN_LIMIT_PAGINATION,

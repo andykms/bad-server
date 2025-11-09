@@ -7,16 +7,15 @@ import { isValidFilename } from '../utils/is-valid-filename'
 import BadRequestError from '../errors/bad-request-error'
 
 const getExtension = (mimetype: string) => {
-  const extensions: { [key: string]: string } = {
-    'image/png': '.png',
-    'image/jpg': '.jpg',
-    'image/jpeg': '.jpg',
-    'image/gif': '.gif',
-    'image/svg+xml': '.svg'
-  }
-  return extensions[mimetype] || '.bin'
+    const extensions: { [key: string]: string } = {
+        'image/png': '.png',
+        'image/jpg': '.jpg',
+        'image/jpeg': '.jpg',
+        'image/gif': '.gif',
+        'image/svg+xml': '.svg',
+    }
+    return extensions[mimetype] || '.bin'
 }
-
 
 type DestinationCallback = (error: Error | null, destination: string) => void
 type FileNameCallback = (error: Error | null, filename: string) => void
@@ -60,7 +59,7 @@ const types = [
     'image/webp',
     'image/heic',
     'image/avif',
-    'image/pjpeg'
+    'image/pjpeg',
 ]
 
 const fileFilter = (
@@ -68,21 +67,26 @@ const fileFilter = (
     file: Express.Multer.File,
     cb: FileFilterCallback
 ) => {
-    
     if (file.originalname.length > 2048) {
-        return cb(new BadRequestError(""))
+        return cb(new BadRequestError(''))
     }
     if (!isValidFilename(file.originalname)) {
-        return cb(new BadRequestError(""))
+        return cb(new BadRequestError(''))
     }
     if (!types.includes(file.mimetype)) {
-        return cb(new BadRequestError(""))
+        return cb(new BadRequestError(''))
     }
 
     return cb(null, true)
 }
 
 const upload = multer({
+    dest: join(
+        __dirname,
+        process.env.UPLOAD_PATH_TEMP
+            ? `../public/${process.env.UPLOAD_PATH_TEMP}`
+            : '../public/temp'
+    ),
     storage,
     limits: { fileSize: 20000000 },
     fileFilter,
